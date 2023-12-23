@@ -1,5 +1,4 @@
-import { StyleSheet, View } from 'react-native';
-import RecordList from './components/month-spendings/record-list';
+import RecordList from './components/record-list';
 
 export default function App() {
   return (

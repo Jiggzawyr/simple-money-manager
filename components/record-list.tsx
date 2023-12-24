@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,13 @@ import {
 import NewRecordModal from "./new-record-modal";
 import { Record, RecordType } from "../models/record";
 import RecordBox from "./record-box";
+import { Summary } from "../models/summary";
+import SummaryBox from "./summary-box";
+import { getSummary } from "../utils/calculations";
 
 const RecordList = () => {
   const recordsTest: Record[] = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     recordsTest.push({
       id: i,
       name: "Name " + i,
@@ -24,34 +27,26 @@ const RecordList = () => {
 
   const [records, setRecords] = useState<Record[]>(recordsTest);
   const [newRecord, setNewRecord] = useState<Record>({});
-
   const [isModalVisible, setModalVisible] = useState(false);
+  const [summary, setSummary] = useState<Summary>({});
+
+  useEffect(() => {
+    setSummary(getSummary(records));
+  }, [records]);
 
   const handlePress = () => {
     setNewRecord({
       type: RecordType.EXPENSE,
+      date: new Date(),
     });
     setModalVisible(true);
     console.log("Modal Opened");
   };
 
-  const handleModalComplete = (newRecord: Record) => {
-    setModalVisible(false);
-    newRecord.id =
-      (records.sort((a: Record, b: Record) => a.id - b.id).at(0).id ?? 0) + 1;
-    console.log(newRecord);
-    setRecords((prevSpending) => {
-      return [...prevSpending, newRecord];
-    });
-    console.log("Modal Completed");
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
-  };
-
   return (
     <View style={styles.container}>
+      <SummaryBox summary={summary}></SummaryBox>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           {records.map((record, index) => (
@@ -68,8 +63,9 @@ const RecordList = () => {
         <NewRecordModal
           newRecord={newRecord}
           setNewRecord={setNewRecord}
-          handleModalComplete={handleModalComplete}
-          handleModalClose={handleModalClose}
+          records={records}
+          setRecords={setRecords}
+          setModalVisible={setModalVisible}
         ></NewRecordModal>
       )}
     </View>

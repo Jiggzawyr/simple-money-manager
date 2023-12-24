@@ -7,15 +7,27 @@ import {
   View,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
-import { RecordType } from "../models/record";
+import { Record, RecordType } from "../models/record";
+import { useState } from "react";
 
 const NewRecordModal = ({
   newRecord,
   setNewRecord,
-  handleModalComplete,
-  handleModalClose,
+  records,
+  setRecords,
+  setModalVisible,
+}: {
+  newRecord: Record;
+  setNewRecord: (any) => void;
+  records: Record[];
+  setRecords: (any) => void;
+  setModalVisible: (any) => void;
 }) => {
+  const [isNameValid, setIsNameValid] = useState<boolean>(true);
+  const [isAmountValid, setIsAmountValid] = useState<boolean>(true);
+
   const setName = (name: string) => {
+    if (name) setIsNameValid(true);
     setNewRecord((prevNewSpending) => {
       return {
         ...prevNewSpending,
@@ -28,6 +40,7 @@ const NewRecordModal = ({
     // Remove non-numeric characters from the input
     const cleanedText = amount.replace(/[^0-9]/g, "");
     const numericAmount = parseInt(cleanedText, 10);
+    if (numericAmount && numericAmount !== 0) setIsAmountValid(true);
     setNewRecord((prevNewSpending) => {
       return {
         ...prevNewSpending,
@@ -45,25 +58,71 @@ const NewRecordModal = ({
     });
   };
 
+  const handleModalComplete = () => {
+    if (!newRecord.name) setIsNameValid(false);
+    if (!newRecord.amount || newRecord.amount === 0) setIsAmountValid(false);
+    if (!newRecord.name || !newRecord.amount || newRecord.amount === 0) return;
+    setModalVisible(false);
+    newRecord.id =
+      (records.sort((a: Record, b: Record) => b.id - a.id).at(0).id ?? 0) + 1;
+    setRecords((prevRecords: Record[]) => {
+      let records = [...prevRecords, newRecord];
+      records = records.sort(
+        (a: Record, b: Record) => a.date.getTime() - b.date.getTime()
+      );
+      return records;
+    });
+    console.log("Modal Completed");
+  };
   return (
     <Modal animationType="fade" transparent={true}>
-      <View style={styles.modalContainer}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <View style={styles.modalContent}>
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Name:</Text>
+            <Text
+              style={{
+                color: "black",
+                fontWeight: "bold",
+              }}
+            >
+              Name:
+            </Text>
             <TextInput
-              style={styles.input}
+              style={{
+                borderWidth: 1,
+                borderColor: isNameValid ? "gray" : "red",
+                padding: 8,
+                borderRadius: 5,
+              }}
               value={newRecord.name}
               onChangeText={(text) => setName(text)}
             />
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Amount:</Text>
+            <Text
+              style={{
+                color: "black",
+                fontWeight: "bold",
+              }}
+            >
+              Amount:
+            </Text>
             <TextInput
-              style={styles.input}
+              style={{
+                borderWidth: 1,
+                borderColor: isAmountValid ? "gray" : "red",
+                padding: 8,
+                borderRadius: 5,
+              }}
               keyboardType="numeric"
-              value={newRecord.amount}
+              value={newRecord.amount?.toString()}
               onChangeText={(text) => setAmount(text)}
             />
           </View>
@@ -84,8 +143,8 @@ const NewRecordModal = ({
                   alignItems: "center",
                 }}
               >
-                <RadioButton value={RecordType.EXPENSE} color="red" />
-                <Text style={{ fontWeight: "bold", color: "red" }}>
+                <RadioButton value={RecordType.EXPENSE} color="maroon" />
+                <Text style={{ fontWeight: "bold", color: "maroon" }}>
                   Expense
                 </Text>
               </View>
@@ -95,24 +154,28 @@ const NewRecordModal = ({
                   alignItems: "center",
                 }}
               >
-                <RadioButton value={RecordType.INCOME} color="blue" />
-                <Text style={{ fontWeight: "bold", color: "blue" }}>
+                <RadioButton value={RecordType.INCOME} color="navy" />
+                <Text style={{ fontWeight: "bold", color: "navy" }}>
                   Income
                 </Text>
               </View>
             </View>
           </RadioButton.Group>
-
-          <View style={styles.buttonContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+            }}
+          >
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => handleModalClose()}
+              onPress={() => setModalVisible(false)}
             >
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalButton}
-              onPress={() => handleModalComplete(newRecord)}
+              onPress={() => handleModalComplete()}
             >
               <Text style={styles.buttonText}>Confirm</Text>
             </TouchableOpacity>
@@ -139,17 +202,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "column",
     justifyContent: "flex-start",
-  },
-  inputLabel: {
-    color: "black",
-    fontWeight: "bold",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "gray",
-    marginBottom: 10,
-    padding: 8,
-    borderRadius: 5,
   },
   buttonContainer: {
     flexDirection: "row",

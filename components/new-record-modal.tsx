@@ -9,6 +9,10 @@ import {
 import { RadioButton } from "react-native-paper";
 import { Record, RecordType } from "../models/record";
 import { useState } from "react";
+import RNSingleSelect, {
+  ISingleSelectDataType,
+} from "@freakycoder/react-native-single-select";
+import { getCategories } from "../utils/categories";
 
 const NewRecordModal = ({
   newRecord,
@@ -18,19 +22,23 @@ const NewRecordModal = ({
   setModalVisible,
 }: {
   newRecord: Record;
-  setNewRecord: (any) => void;
+  setNewRecord: (arg0: any) => void;
   records: Record[];
-  setRecords: (any) => void;
-  setModalVisible: (any) => void;
+  setRecords: (arg0: any) => void;
+  setModalVisible: (arg0: any) => void;
 }) => {
   const [isNameValid, setIsNameValid] = useState<boolean>(true);
   const [isAmountValid, setIsAmountValid] = useState<boolean>(true);
+  const [isCategoryValid, setIsCategoryValid] = useState<boolean>(true);
+  const [categories, setCategories] = useState<Array<ISingleSelectDataType>>(
+    getCategories(RecordType.EXPENSE)
+  );
 
   const setName = (name: string) => {
     if (name) setIsNameValid(true);
-    setNewRecord((prevNewSpending) => {
+    setNewRecord((prevNewRecord: Record) => {
       return {
-        ...prevNewSpending,
+        ...prevNewRecord,
         name: name,
       };
     });
@@ -41,19 +49,31 @@ const NewRecordModal = ({
     const cleanedText = amount.replace(/[^0-9]/g, "");
     const numericAmount = parseInt(cleanedText, 10);
     if (numericAmount && numericAmount !== 0) setIsAmountValid(true);
-    setNewRecord((prevNewSpending) => {
+    setNewRecord((prevNewRecord: Record) => {
       return {
-        ...prevNewSpending,
+        ...prevNewRecord,
         amount: numericAmount,
       };
     });
   };
 
   const setType = (type: string) => {
-    setNewRecord((prevNewSpending) => {
+    setCategories(getCategories(type as RecordType));
+    setNewRecord((prevNewRecord: Record) => {
       return {
-        ...prevNewSpending,
+        ...prevNewRecord,
         type: type,
+        category: undefined,
+      };
+    });
+  };
+
+  const setCategory = (category: string) => {
+    if (category) setIsCategoryValid(true);
+    setNewRecord((prevNewRecord: Record) => {
+      return {
+        ...prevNewRecord,
+        category: category,
       };
     });
   };
@@ -61,19 +81,28 @@ const NewRecordModal = ({
   const handleModalComplete = () => {
     if (!newRecord.name) setIsNameValid(false);
     if (!newRecord.amount || newRecord.amount === 0) setIsAmountValid(false);
-    if (!newRecord.name || !newRecord.amount || newRecord.amount === 0) return;
+    if (!newRecord.category) setIsCategoryValid(false);
+    if (
+      !newRecord.name ||
+      !newRecord.amount ||
+      newRecord.amount === 0 ||
+      !newRecord.category
+    )
+      return;
     setModalVisible(false);
     newRecord.id =
-      (records.sort((a: Record, b: Record) => b.id - a.id).at(0).id ?? 0) + 1;
+      (records.sort((a: Record, b: Record) => b.id - a.id).at(0)?.id ?? 0) + 1;
+    newRecord.date = new Date();
     setRecords((prevRecords: Record[]) => {
       let records = [...prevRecords, newRecord];
-      records = records.sort(
-        (a: Record, b: Record) => a.date.getTime() - b.date.getTime()
-      );
+      records = records.sort((a: Record, b: Record) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
       return records;
     });
     console.log("Modal Completed");
   };
+
   return (
     <Modal animationType="fade" transparent={true}>
       <View
@@ -161,6 +190,25 @@ const NewRecordModal = ({
               </View>
             </View>
           </RadioButton.Group>
+
+          <View>
+            <RNSingleSelect
+              placeholder="Select Category"
+              buttonContainerStyle={{
+                backgroundColor: "beige",
+                borderWidth: 1,
+                borderColor: isCategoryValid ? "gray" : "red",
+              }}
+              menuBarContainerStyle={styles.categorySelectOption}
+              menuItemTextStyle={styles.categorySelectOptionText}
+              data={categories}
+              onSelect={(selectedItem: ISingleSelectDataType) => {
+                console.log("SelectedItem: ", selectedItem);
+                setCategory(selectedItem.value);
+              }}
+            />
+          </View>
+
           <View
             style={{
               flexDirection: "row",
@@ -203,9 +251,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
   },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+  categorySelectOption: {
+    backgroundColor: "beige",
+  },
+  categorySelectOptionText: {
+    color: "black",
   },
   modalButton: {
     borderWidth: 2,

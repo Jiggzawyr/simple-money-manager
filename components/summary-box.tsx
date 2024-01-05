@@ -5,11 +5,13 @@ import { format } from "date-fns";
 const SummaryBox = ({ summary }: { summary: Summary }) => {
   return (
     <View style={styles.box}>
-      <View style={{}}>
-        <Text>
-          {summary.startDate && format(summary.startDate, "yyyy-MMM-dd")}{" "}
-          {" - "}
-          {summary.endDate && format(summary.endDate, "yyyy-MMM-dd")}
+      <View style={styles.dateHeader}>
+        <Text style={styles.dateHeaderText}>
+          {summary.startDate && format(summary.startDate, "yyyy.MM.dd")}
+        </Text>
+        <Text style={styles.dateHeaderText}>{" - "}</Text>
+        <Text style={styles.dateHeaderText}>
+          {summary.endDate && format(summary.endDate, "yyyy.MM.dd")}
         </Text>
       </View>
       <Text style={{ color: "navy", fontWeight: "bold" }}>
@@ -31,11 +33,22 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderRadius: 10,
     overflow: "hidden",
-    padding: 15,
+    paddingTop: 2,
+    paddingHorizontal: 15,
+    paddingBottom: 10,
     marginHorizontal: 15,
     marginTop: 25,
     marginBottom: 2,
     backgroundColor: "khaki",
+  },
+  dateHeader: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  dateHeaderText: {
+    fontWeight: "bold",
+    fontSize: 22,
+    color: "olivedrab",
   },
 });
 

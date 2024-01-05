@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import NewRecordModal from "./new-record-modal";
 import { Record, RecordType } from "../models/record";
 import RecordBox from "./record-box";
 import { Summary } from "../models/summary";
 import SummaryBox from "./summary-box";
 import { getSummary } from "../utils/calculations";
+import { retrieveRecords, saveRecords } from "../utils/storage";
 
 const RecordList = () => {
   const recordsTest: Record[] = [];
@@ -30,14 +25,19 @@ const RecordList = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [summary, setSummary] = useState<Summary>({});
 
+  // Load records when the component mounts
   useEffect(() => {
+    retrieveRecords().then((records) => setRecords(records));
+  }, []);
+
+  useEffect(() => {
+    saveRecords(records);
     setSummary(getSummary(records));
   }, [records]);
 
   const handlePress = () => {
     setNewRecord({
       type: RecordType.EXPENSE,
-      date: new Date(),
     });
     setModalVisible(true);
     console.log("Modal Opened");
@@ -50,14 +50,18 @@ const RecordList = () => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           {records.map((record, index) => (
-            <RecordBox record={record} key={index}></RecordBox>
+            <RecordBox
+              record={record}
+              setRecords={setRecords}
+              key={index}
+            ></RecordBox>
           ))}
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.addButton} onPress={handlePress}>
+      <Pressable style={styles.addButton} onPress={handlePress}>
         <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
+      </Pressable>
 
       {isModalVisible && (
         <NewRecordModal
@@ -88,6 +92,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "black",
     position: "absolute",
+    bottom: 20,
+    right: 20,
     backgroundColor: "darkturquoise",
     width: 70,
     height: 70,
@@ -96,8 +102,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
     marginHorizontal: 15,
-    bottom: 20,
-    right: 20,
   },
   buttonText: {
     color: "white",

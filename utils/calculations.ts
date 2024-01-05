@@ -14,8 +14,8 @@ export function getSummary(records: Record[]): Summary {
     }
     return acc;
   }, 0);
-  const startDate = records.at(0).date;
-  const endDate = records.at(records.length - 1).date;
+  const startDate = records.at(0)?.date;
+  const endDate = records.at(records.length - 1)?.date;
   const summary: Summary = {
     startDate,
     endDate,

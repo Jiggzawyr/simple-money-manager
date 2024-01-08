@@ -202,6 +202,7 @@ const NewRecordModal = ({
               menuBarContainerStyle={styles.categorySelectOption}
               menuItemTextStyle={styles.categorySelectOptionText}
               data={categories}
+              searchEnabled={false}
               onSelect={(selectedItem: ISingleSelectDataType) => {
                 console.log("SelectedItem: ", selectedItem);
                 setCategory(selectedItem.value);

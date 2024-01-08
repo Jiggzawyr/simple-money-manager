@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Record, RecordType } from "../models/record";
 import { format } from "date-fns";
+import Category from "./category";
 
 const RecordBox = ({
   record,
@@ -18,18 +19,19 @@ const RecordBox = ({
     });
     console.log("Delete Pressed");
   };
-
+  console.log("Delete Pressed");
   return (
     <View style={styles.box}>
       <View
         style={{
           flex: 1,
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
         }}
       >
-        <Text style={{ fontWeight: "bold" }}>
-          {record.id}: {record.name}
+        <Category recordCategory={record.category}></Category>
+        <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
+          {record.name}
         </Text>
       </View>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import NewRecordModal from "./new-record-modal";
-import { Record, RecordType } from "../models/record";
+import { ExpensesCategory, Record, RecordType } from "../models/record";
 import RecordBox from "./record-box";
 import { Summary } from "../models/summary";
 import SummaryBox from "./summary-box";
@@ -15,12 +15,13 @@ const RecordList = () => {
       id: i,
       name: "Name " + i,
       type: RecordType.EXPENSE,
+      category: ExpensesCategory.RENT_MORTGAGE,
       amount: 1000 * i,
       date: new Date(),
     });
   }
 
-  const [records, setRecords] = useState<Record[]>(recordsTest);
+  const [records, setRecords] = useState<Record[]>([]);
   const [newRecord, setNewRecord] = useState<Record>({});
   const [isModalVisible, setModalVisible] = useState(false);
   const [summary, setSummary] = useState<Summary>({});

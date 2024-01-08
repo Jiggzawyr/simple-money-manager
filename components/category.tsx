@@ -10,7 +10,6 @@ const iconSize = 18;
 const iconColor = "olivedrab";
 
 const Category = ({ recordCategory }: { recordCategory: string }) => {
-  console.log(recordCategory);
   switch (recordCategory) {
     case IncomeCategory.SALARY:
       return (

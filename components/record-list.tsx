@@ -1,40 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import NewRecordModal from "./new-record-modal";
-import { ExpensesCategory, Record, RecordType } from "../models/record";
+import { Record, RecordType } from "../models/record";
 import RecordBox from "./record-box";
 import { Summary } from "../models/summary";
 import SummaryBox from "./summary-box";
-import { getSummary } from "../utils/calculations";
-import { retrieveRecords, saveRecords } from "../utils/storage";
 
-const RecordList = () => {
-  const recordsTest: Record[] = [];
-  for (let i = 0; i < 15; i++) {
-    recordsTest.push({
-      id: i,
-      name: "Name " + i,
-      type: RecordType.EXPENSE,
-      category: ExpensesCategory.RENT_MORTGAGE,
-      amount: 1000 * i,
-      date: new Date(),
-    });
-  }
-
-  const [records, setRecords] = useState<Record[]>([]);
+const RecordList = ({
+  records,
+  setRecords,
+  summary,
+}: {
+  records: Record[];
+  setRecords: (arg0: any) => void;
+  summary: Summary;
+}) => {
   const [newRecord, setNewRecord] = useState<Record>({});
   const [isModalVisible, setModalVisible] = useState(false);
-  const [summary, setSummary] = useState<Summary>({});
-
-  // Load records when the component mounts
-  useEffect(() => {
-    retrieveRecords().then((records) => setRecords(records));
-  }, []);
-
-  useEffect(() => {
-    saveRecords(records);
-    setSummary(getSummary(records));
-  }, [records]);
 
   const handlePress = () => {
     setNewRecord({

@@ -19,7 +19,7 @@ const RecordBox = ({
     });
     console.log("Delete Pressed");
   };
-  console.log("Delete Pressed");
+
   return (
     <View style={styles.box}>
       <View

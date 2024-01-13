@@ -24,3 +24,33 @@ export function getSummary(records: Record[]): Summary {
   };
   return summary;
 }
+
+export function getChartData(records: Record[]): any[] {
+  let group: { [key: string]: Record[] } = {};
+  records.forEach((record) => {
+    if (record.type === RecordType.INCOME) return;
+    if (!group[record.category]) {
+      group[record.category] = [];
+    }
+    group[record.category].push(record);
+  });
+
+  const total: number = records.reduce(
+    (sum: number, record: Record) =>
+      record.type === RecordType.EXPENSE ? sum + record.amount : sum,
+    0
+  );
+
+  return Object.keys(group).map((key) => {
+    const amount: number = group[key].reduce(
+      (sum: number, record: Record) => sum + record.amount,
+      0
+    );
+    const label: string =
+      key + "\n" + ((amount / total) * 100).toFixed(2) + "%";
+    return {
+      x: label,
+      y: amount,
+    };
+  });
+}

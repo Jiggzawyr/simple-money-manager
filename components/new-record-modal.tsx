@@ -204,7 +204,6 @@ const NewRecordModal = ({
               data={categories}
               searchEnabled={false}
               onSelect={(selectedItem: ISingleSelectDataType) => {
-                console.log("SelectedItem: ", selectedItem);
                 setCategory(selectedItem.value);
               }}
             />

@@ -95,7 +95,9 @@ const Wrapper = () => {
             />
           )}
         </Tab.Screen>
-        <Tab.Screen name="Chart" component={Chart} />
+        <Tab.Screen name="Chart">
+          {() => <Chart records={records} />}
+        </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>
   );

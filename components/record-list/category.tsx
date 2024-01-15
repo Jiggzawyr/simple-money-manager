@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { ExpensesCategory, IncomeCategory } from "../models/record";
+import { ExpensesCategory, IncomeCategory } from "../../models/record";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";

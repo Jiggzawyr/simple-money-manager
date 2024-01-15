@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { Record, RecordType } from "../models/record";
+import { Record, RecordType } from "../../models/record";
 import { format } from "date-fns";
 import Category from "./category";
 

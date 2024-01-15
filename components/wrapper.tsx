@@ -1,14 +1,19 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import Archive from "../components/archive";
-import RecordList from "../components/record-list";
-import Chart from "../components/chart";
+import Archive from "./archive/archive";
+import RecordList from "./record-list/record-list";
+import Chart from "./chart/chart";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ExpensesCategory, Record, RecordType } from "../models/record";
-import { retrieveRecords, saveRecords } from "../utils/storage";
+import {
+  retrieveRecords,
+  retrieveSummaries,
+  saveRecords,
+  saveSummaries,
+} from "../utils/storage";
 import { getSummary } from "../utils/calculations";
-import { Summary } from "../models/summary";
+import { Summary, SummaryStatus } from "../models/summary";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -27,16 +32,46 @@ const Wrapper = () => {
 
   const [records, setRecords] = useState<Record[]>([]);
   const [summary, setSummary] = useState<Summary>({});
+  const [summaries, setSummaries] = useState<Summary[]>([]);
 
-  // Load records when the component mounts
+  // Load summaries when the component mounts
   useEffect(() => {
-    retrieveRecords().then((records) => setRecords(records));
+    //retrieveRecords().then((records) => setRecords(records));
+    retrieveSummaries().then((summaries) => {
+      if (summaries.length === 0) {
+        console.log("No saved summaries");
+        const newSummary: Summary = getSummary([]);
+        summaries.push(newSummary);
+      }
+      console.log("***summaries***");
+      console.log(summaries);
+      setSummaries(summaries);
+      const records = summaries.find(
+        (summary) => summary.status === SummaryStatus.ACTIVE
+      ).records;
+      setRecords(records);
+    });
   }, []);
 
   useEffect(() => {
-    saveRecords(records);
+    console.log("useEffect - records");
     setSummary(getSummary(records));
+    saveRecords(records);
   }, [records]);
+
+  useEffect(() => {
+    console.log("useEffect - summary");
+    setSummaries((prevSummaries) => {
+      const newSummaries: Summary[] = [...prevSummaries];
+      const index: number = newSummaries.findIndex(
+        (summary) => summary.status === SummaryStatus.ACTIVE
+      );
+      if (index === -1) newSummaries.push(summary);
+      else newSummaries[index] = summary;
+      saveSummaries(newSummaries);
+      return newSummaries;
+    });
+  }, [summary]);
 
   return (
     <NavigationContainer>
@@ -85,13 +120,16 @@ const Wrapper = () => {
         initialRouteName="RecordList"
         tabBarPosition="bottom"
       >
-        <Tab.Screen name="Archive" component={Archive} />
+        <Tab.Screen name="Archive">
+          {() => <Archive summaries={summaries} />}
+        </Tab.Screen>
         <Tab.Screen name="RecordList">
           {() => (
             <RecordList
               records={records}
               setRecords={setRecords}
               summary={summary}
+              setSummaries={setSummaries}
             />
           )}
         </Tab.Screen>

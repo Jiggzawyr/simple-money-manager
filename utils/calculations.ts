@@ -1,5 +1,5 @@
 import { Record, RecordType } from "../models/record";
-import { Summary } from "../models/summary";
+import { Summary, SummaryStatus } from "../models/summary";
 
 export function getSummary(records: Record[]): Summary {
   const totalIncome = records.reduce((acc, record) => {
@@ -21,6 +21,8 @@ export function getSummary(records: Record[]): Summary {
     endDate,
     totalIncome,
     totalExpenses,
+    records,
+    status: SummaryStatus.ACTIVE,
   };
   return summary;
 }

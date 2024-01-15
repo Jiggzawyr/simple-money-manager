@@ -1,7 +1,7 @@
 import { View } from "react-native";
-import { Record } from "../models/record";
+import { Record } from "../../models/record";
 import { VictoryPie } from "victory-native";
-import { getChartData } from "../utils/calculations";
+import { getChartData } from "../../utils/calculations";
 
 const Chart = ({ records }): { records: Record[] } => {
   return (

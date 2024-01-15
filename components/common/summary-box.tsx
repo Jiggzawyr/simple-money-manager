@@ -1,8 +1,33 @@
-import { View, Text, StyleSheet } from "react-native";
-import { Summary } from "../models/summary";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Summary, SummaryStatus } from "../../models/summary";
 import { format } from "date-fns";
+import { Feather } from "@expo/vector-icons";
+import { getSummary } from "../../utils/calculations";
 
-const SummaryBox = ({ summary }: { summary: Summary }) => {
+const SummaryBox = ({
+  enableArchive,
+  summary,
+  setSummaries,
+  setRecords,
+}: {
+  enableArchive: boolean;
+  summary: Summary;
+  setSummaries?: (arg0: any) => void;
+  setRecords?: (arg0: any) => void;
+}) => {
+  const handlePress = () => {
+    console.log("Archive Pressed");
+    setSummaries((prevSummaries: Summary[]) => {
+      const newSummaries: Summary[] = [...prevSummaries].filter(
+        (summary) => summary.status === SummaryStatus.ARCHIVED
+      );
+      const archivedSummary = { ...summary, status: SummaryStatus.ARCHIVED };
+      newSummaries.push(archivedSummary);
+      return newSummaries;
+    });
+    setRecords([]);
+  };
+
   return (
     <View style={styles.box}>
       <View style={styles.dateHeader}>
@@ -23,6 +48,11 @@ const SummaryBox = ({ summary }: { summary: Summary }) => {
       <Text style={{ color: "black", fontWeight: "bold" }}>
         Change: {summary.totalIncome - summary.totalExpenses}
       </Text>
+      {enableArchive && (
+        <Pressable style={styles.archiveButton} onPress={handlePress}>
+          <Feather name="archive" size={28} color="orangered" />
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -49,6 +79,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 22,
     color: "olivedrab",
+  },
+  archiveButton: {
+    position: "absolute",
+    bottom: 6,
+    right: 12,
   },
 });
 

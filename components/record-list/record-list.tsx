@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import NewRecordModal from "./new-record-modal";
-import { Record, RecordType } from "../models/record";
+import { Record, RecordType } from "../../models/record";
 import RecordBox from "./record-box";
-import { Summary } from "../models/summary";
-import SummaryBox from "./summary-box";
+import { Summary } from "../../models/summary";
+import SummaryBox from "../common/summary-box";
 
 const RecordList = ({
   records,
   setRecords,
   summary,
+  setSummaries,
 }: {
   records: Record[];
   setRecords: (arg0: any) => void;
   summary: Summary;
+  setSummaries: (arg0: any) => void;
 }) => {
   const [newRecord, setNewRecord] = useState<Record>({});
   const [isModalVisible, setModalVisible] = useState(false);
@@ -28,15 +30,20 @@ const RecordList = ({
 
   return (
     <View style={styles.container}>
-      <SummaryBox summary={summary}></SummaryBox>
+      <SummaryBox
+        enableArchive={true}
+        summary={summary}
+        setSummaries={setSummaries}
+        setRecords={setRecords}
+      ></SummaryBox>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           {records.map((record, index) => (
             <RecordBox
+              key={index}
               record={record}
               setRecords={setRecords}
-              key={index}
             ></RecordBox>
           ))}
         </View>

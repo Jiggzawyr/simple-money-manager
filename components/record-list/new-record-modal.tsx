@@ -7,12 +7,12 @@ import {
   View,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
-import { Record, RecordType } from "../models/record";
+import { Record, RecordType } from "../../models/record";
 import { useState } from "react";
 import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
-import { getCategories } from "../utils/categories";
+import { getCategories } from "../../utils/categories";
 
 const NewRecordModal = ({
   newRecord,

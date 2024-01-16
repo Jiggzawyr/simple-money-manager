@@ -1,0 +1,17 @@
+export enum COLORS {
+  tabIcon = "darkslateblue",
+  tabIconFocused = "mediumvioletred",
+  tabBackground = "gray",
+  background = "beige",
+  summaryBackground = "khaki",
+  summaryText = "black",
+  chartLabel = "teal",
+  expense = "maroon",
+  income = "navy",
+  recordBackground = "goldenrod",
+  recordIcon = "black",
+  remove = "indianred",
+  button = "darkturquoise",
+  buttonText = "white",
+  text = "black",
+}

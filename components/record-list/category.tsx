@@ -5,6 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
+import { COLORS } from "../../utils/color";
 
 const iconSize = 18;
 const iconColor = "olivedrab";
@@ -20,7 +21,7 @@ const Category = ({ recordCategory }: { recordCategory: string }) => {
         <FontAwesome5
           name="money-bill-wave"
           size={iconSize}
-          color="olivedrab"
+          color={COLORS.recordIcon}
         />
       );
     case IncomeCategory.OTHER:
@@ -32,28 +33,50 @@ const Category = ({ recordCategory }: { recordCategory: string }) => {
         <MaterialCommunityIcons
           name="food-croissant"
           size={18}
-          color="olivedrab"
+          color={COLORS.recordIcon}
         />
       );
     case ExpensesCategory.UTILITIES:
       return (
-        <MaterialIcons name="lightbulb" size={iconSize} color={iconColor} />
+        <MaterialIcons
+          name="lightbulb"
+          size={iconSize}
+          color={COLORS.recordIcon}
+        />
       );
     case ExpensesCategory.RENT_MORTGAGE:
-      return <Entypo name="home" size={iconSize} color={iconColor} />;
+      return <Entypo name="home" size={iconSize} color={COLORS.recordIcon} />;
     case ExpensesCategory.TRANSPORTATION:
-      return <FontAwesome name="car" size={iconSize} color={iconColor} />;
+      return (
+        <FontAwesome name="car" size={iconSize} color={COLORS.recordIcon} />
+      );
     case ExpensesCategory.HEALTHCARE:
-      return <MaterialIcons name="healing" size={iconSize} color={iconColor} />;
+      return (
+        <MaterialIcons
+          name="healing"
+          size={iconSize}
+          color={COLORS.recordIcon}
+        />
+      );
     case ExpensesCategory.CLOTHING:
       return (
-        <FontAwesome5 name="hat-cowboy" size={iconSize} color={iconColor} />
+        <FontAwesome5
+          name="hat-cowboy"
+          size={iconSize}
+          color={COLORS.recordIcon}
+        />
       );
     case ExpensesCategory.TRAVEL:
-      return <FontAwesome name="plane" size={iconSize} color={iconColor} />;
+      return (
+        <FontAwesome name="plane" size={iconSize} color={COLORS.recordIcon} />
+      );
     case ExpensesCategory.OTHER:
       return (
-        <Foundation name="clipboard-notes" size={iconSize} color={iconColor} />
+        <Foundation
+          name="clipboard-notes"
+          size={iconSize}
+          color={COLORS.recordIcon}
+        />
       );
   }
 };

@@ -5,6 +5,7 @@ import { Record, RecordType } from "../../models/record";
 import RecordBox from "./record-box";
 import { Summary } from "../../models/summary";
 import SummaryBox from "../common/summary-box";
+import { COLORS } from "../../utils/color";
 
 const RecordList = ({
   records,
@@ -31,7 +32,7 @@ const RecordList = ({
   return (
     <View style={styles.container}>
       <SummaryBox
-        enableArchive={true}
+        archive={false}
         summary={summary}
         setSummaries={setSummaries}
         setRecords={setRecords}
@@ -69,7 +70,7 @@ const RecordList = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "beige",
+    backgroundColor: COLORS.background,
     paddingTop: 20,
   },
   scrollContainer: {
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: "darkturquoise",
+    backgroundColor: COLORS.button,
     width: 70,
     height: 70,
     borderRadius: 35,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   buttonText: {
-    color: "white",
+    color: COLORS.buttonText,
     fontSize: 24,
   },
 });

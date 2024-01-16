@@ -2,30 +2,53 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Summary, SummaryStatus } from "../../models/summary";
 import { format } from "date-fns";
 import { Feather } from "@expo/vector-icons";
-import { getSummary } from "../../utils/calculations";
+import { FontAwesome } from "@expo/vector-icons";
+import { COLORS } from "../../utils/color";
 
 const SummaryBox = ({
-  enableArchive,
+  archive,
   summary,
   setSummaries,
   setRecords,
 }: {
-  enableArchive: boolean;
+  archive: boolean;
   summary: Summary;
   setSummaries?: (arg0: any) => void;
   setRecords?: (arg0: any) => void;
 }) => {
-  const handlePress = () => {
-    console.log("Archive Pressed");
+  const handlePressArchive = () => {
+    console.log("Archive Summary Pressed");
     setSummaries((prevSummaries: Summary[]) => {
-      const newSummaries: Summary[] = [...prevSummaries].filter(
+      let newSummaries: Summary[] = [...prevSummaries].filter(
         (summary) => summary.status === SummaryStatus.ARCHIVED
       );
-      const archivedSummary = { ...summary, status: SummaryStatus.ARCHIVED };
+      const id: number =
+        (prevSummaries.sort((a, b) => (a.id || 0) - (b.id || 0)).pop().id ||
+          0) + 1;
+      console.log("id: " + id);
+      const archivedSummary: Summary = {
+        ...summary,
+        status: SummaryStatus.ARCHIVED,
+        id: id,
+      };
       newSummaries.push(archivedSummary);
+      newSummaries = newSummaries.sort((a, b) => (b.id || 0) - (a.id || 0));
+      console.log(newSummaries);
       return newSummaries;
     });
     setRecords([]);
+  };
+
+  const handlePressRemove = (summary: Summary) => {
+    console.log("Remove Summary Pressed");
+    console.log(summary);
+    setSummaries((prevSummaries: Summary[]) => {
+      const newSummaries: Summary[] = [...prevSummaries].filter(
+        (s) => s.id !== summary.id
+      );
+      console.log(newSummaries.length);
+      return newSummaries;
+    });
   };
 
   return (
@@ -39,18 +62,26 @@ const SummaryBox = ({
           {summary.endDate && format(summary.endDate, "yyyy.MM.dd")}
         </Text>
       </View>
-      <Text style={{ color: "navy", fontWeight: "bold" }}>
+      <Text style={{ color: COLORS.income, fontWeight: "bold" }}>
         Total Income: {summary.totalIncome}
       </Text>
-      <Text style={{ color: "maroon", fontWeight: "bold" }}>
+      <Text style={{ color: COLORS.expense, fontWeight: "bold" }}>
         Total Expenses: {summary.totalExpenses}
       </Text>
-      <Text style={{ color: "black", fontWeight: "bold" }}>
+      <Text style={{ color: COLORS.text, fontWeight: "bold" }}>
         Change: {summary.totalIncome - summary.totalExpenses}
       </Text>
-      {enableArchive && (
-        <Pressable style={styles.archiveButton} onPress={handlePress}>
-          <Feather name="archive" size={28} color="orangered" />
+      {!archive && (
+        <Pressable style={styles.archiveButton} onPress={handlePressArchive}>
+          <Feather name="archive" size={28} color={COLORS.remove} />
+        </Pressable>
+      )}
+      {archive && summary.status === SummaryStatus.ARCHIVED && (
+        <Pressable
+          style={styles.archiveButton}
+          onPress={() => handlePressRemove(summary)}
+        >
+          <FontAwesome name="remove" size={28} color={COLORS.remove} />
         </Pressable>
       )}
     </View>
@@ -69,7 +100,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginTop: 25,
     marginBottom: 2,
-    backgroundColor: "khaki",
+    backgroundColor: COLORS.summaryBackground,
   },
   dateHeader: {
     flexDirection: "row",
@@ -78,7 +109,7 @@ const styles = StyleSheet.create({
   dateHeaderText: {
     fontWeight: "bold",
     fontSize: 22,
-    color: "olivedrab",
+    color: COLORS.summaryText,
   },
   archiveButton: {
     position: "absolute",

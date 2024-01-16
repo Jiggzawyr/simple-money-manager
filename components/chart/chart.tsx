@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Record } from "../../models/record";
 import { VictoryPie } from "victory-native";
 import { getChartData } from "../../utils/calculations";
+import { COLORS } from "../../utils/color";
 
 const Chart = ({ records }): { records: Record[] } => {
   return (
@@ -10,7 +11,7 @@ const Chart = ({ records }): { records: Record[] } => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "beige",
+        backgroundColor: COLORS.background,
       }}
     >
       <VictoryPie
@@ -35,7 +36,7 @@ const Chart = ({ records }): { records: Record[] } => {
           },
           labels: {
             fontSize: 12,
-            fill: "teal",
+            fill: COLORS.chartLabel,
             fontWeight: "bold",
           },
         }}

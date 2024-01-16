@@ -13,6 +13,7 @@ import RNSingleSelect, {
   ISingleSelectDataType,
 } from "@freakycoder/react-native-single-select";
 import { getCategories } from "../../utils/categories";
+import { COLORS } from "../../utils/color";
 
 const NewRecordModal = ({
   newRecord,
@@ -172,8 +173,11 @@ const NewRecordModal = ({
                   alignItems: "center",
                 }}
               >
-                <RadioButton value={RecordType.EXPENSE} color="maroon" />
-                <Text style={{ fontWeight: "bold", color: "maroon" }}>
+                <RadioButton
+                  value={RecordType.EXPENSE}
+                  color={COLORS.expense}
+                />
+                <Text style={{ fontWeight: "bold", color: COLORS.expense }}>
                   Expense
                 </Text>
               </View>
@@ -183,8 +187,8 @@ const NewRecordModal = ({
                   alignItems: "center",
                 }}
               >
-                <RadioButton value={RecordType.INCOME} color="navy" />
-                <Text style={{ fontWeight: "bold", color: "navy" }}>
+                <RadioButton value={RecordType.INCOME} color={COLORS.income} />
+                <Text style={{ fontWeight: "bold", color: COLORS.income }}>
                   Income
                 </Text>
               </View>
@@ -195,7 +199,7 @@ const NewRecordModal = ({
             <RNSingleSelect
               placeholder="Select Category"
               buttonContainerStyle={{
-                backgroundColor: "beige",
+                backgroundColor: COLORS.background,
                 borderWidth: 1,
                 borderColor: isCategoryValid ? "gray" : "red",
               }}
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    backgroundColor: "beige",
+    backgroundColor: COLORS.background,
     padding: 20,
     borderRadius: 5,
     elevation: 5,
@@ -252,7 +256,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   categorySelectOption: {
-    backgroundColor: "beige",
+    backgroundColor: COLORS.background,
   },
   categorySelectOptionText: {
     color: "black",
@@ -260,14 +264,14 @@ const styles = StyleSheet.create({
   modalButton: {
     borderWidth: 2,
     borderColor: "black",
-    backgroundColor: "darkturquoise",
+    backgroundColor: COLORS.button,
     padding: 15,
     marginLeft: 5,
     borderRadius: 5,
     marginTop: 10,
   },
   buttonText: {
-    color: "white",
+    color: COLORS.buttonText,
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",

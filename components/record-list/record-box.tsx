@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Record, RecordType } from "../../models/record";
 import { format } from "date-fns";
 import Category from "./category";
+import { Feather } from "@expo/vector-icons";
+import { COLORS } from "../../utils/color";
 
 const RecordBox = ({
   record,
@@ -11,7 +13,7 @@ const RecordBox = ({
   setRecords: (arg0: any) => void;
 }) => {
   const recordTypeColor =
-    record.type === RecordType.EXPENSE ? "maroon" : "navy";
+    record.type === RecordType.EXPENSE ? COLORS.expense : COLORS.income;
 
   const handlePress = () => {
     setRecords((prevRecords: Record[]) => {
@@ -36,7 +38,7 @@ const RecordBox = ({
       </View>
 
       <Pressable style={styles.deleteButton} onPress={handlePress}>
-        <Text style={styles.minus}>-</Text>
+        <Feather name="minus-circle" size={22} color={COLORS.remove} />
       </Pressable>
 
       <View
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     padding: 5,
     marginTop: 5,
-    backgroundColor: "goldenrod",
+    backgroundColor: COLORS.recordBackground,
   },
   deleteButton: {
     position: "absolute",
@@ -79,19 +81,8 @@ const styles = StyleSheet.create({
     right: 10,
     width: 22,
     height: 22,
-    borderRadius: 11,
-    borderWidth: 1,
-    borderColor: "black",
-    backgroundColor: "indianred",
     justifyContent: "center",
     alignItems: "center",
-  },
-  minus: {
-    fontWeight: "bold",
-    color: "darkred",
-    fontSize: 32,
-    position: "absolute",
-    top: -18,
   },
 });
 

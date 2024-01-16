@@ -14,6 +14,7 @@ import {
 } from "../utils/storage";
 import { getSummary } from "../utils/calculations";
 import { Summary, SummaryStatus } from "../models/summary";
+import { COLORS } from "../utils/color";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -55,23 +56,25 @@ const Wrapper = () => {
 
   useEffect(() => {
     console.log("useEffect - records");
-    setSummary(getSummary(records));
     saveRecords(records);
-  }, [records]);
-
-  useEffect(() => {
-    console.log("useEffect - summary");
+    const newSummary: Summary = getSummary(records);
+    setSummary(newSummary);
     setSummaries((prevSummaries) => {
       const newSummaries: Summary[] = [...prevSummaries];
       const index: number = newSummaries.findIndex(
         (summary) => summary.status === SummaryStatus.ACTIVE
       );
-      if (index === -1) newSummaries.push(summary);
-      else newSummaries[index] = summary;
+      if (index === -1) newSummaries.unshift(newSummary);
+      else newSummaries[index] = newSummary;
       saveSummaries(newSummaries);
       return newSummaries;
     });
-  }, [summary]);
+  }, [records]);
+
+  // useEffect(() => {
+  //   console.log("useEffect - summary");
+
+  // }, [summary]);
 
   return (
     <NavigationContainer>
@@ -94,13 +97,13 @@ const Wrapper = () => {
               <MaterialIcons
                 name={iconName}
                 size={20}
-                color={focused ? "mediumvioletred" : "darkslateblue"}
+                color={focused ? COLORS.tabIconFocused : COLORS.tabIcon}
               />
             );
           },
           showLabel: true,
           tabBarContentContainerStyle: {
-            backgroundColor: "khaki",
+            backgroundColor: COLORS.tabBackground,
             display: "flex",
             justifyContent: "center",
             alignItems: "stretch",
@@ -121,7 +124,7 @@ const Wrapper = () => {
         tabBarPosition="bottom"
       >
         <Tab.Screen name="Archive">
-          {() => <Archive summaries={summaries} />}
+          {() => <Archive summaries={summaries} setSummaries={setSummaries} />}
         </Tab.Screen>
         <Tab.Screen name="RecordList">
           {() => (

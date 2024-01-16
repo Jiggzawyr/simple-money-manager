@@ -15,23 +15,13 @@ const Chart = ({ records }): { records: Record[] } => {
       }}
     >
       <VictoryPie
-        colorScale={[
-          "aquamarine",
-          "greenyellow",
-          "lightcoral",
-          "blueviolet",
-          "chocolate",
-          "darkcyan",
-          "darkorchid",
-          "gold",
-        ]}
+        colorScale={[COLORS.chart]}
         data={getChartData(records)}
         width={500}
         padding={100}
         style={{
           data: {
-            fillOpacity: 0.6,
-            stroke: "black",
+            stroke: COLORS.border,
             strokeWidth: 1.5,
           },
           labels: {

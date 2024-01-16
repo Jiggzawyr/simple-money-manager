@@ -8,13 +8,16 @@ import { Foundation } from "@expo/vector-icons";
 import { COLORS } from "../../utils/color";
 
 const iconSize = 18;
-const iconColor = "olivedrab";
 
 const Category = ({ recordCategory }: { recordCategory: string }) => {
   switch (recordCategory) {
     case IncomeCategory.SALARY:
       return (
-        <MaterialIcons name="attach-money" size={iconSize} color={iconColor} />
+        <MaterialIcons
+          name="attach-money"
+          size={iconSize}
+          color={COLORS.recordIcon}
+        />
       );
     case IncomeCategory.BONUS:
       return (
@@ -26,7 +29,11 @@ const Category = ({ recordCategory }: { recordCategory: string }) => {
       );
     case IncomeCategory.OTHER:
       return (
-        <Foundation name="clipboard-notes" size={iconSize} color={iconColor} />
+        <Foundation
+          name="clipboard-notes"
+          size={iconSize}
+          color={COLORS.recordIcon}
+        />
       );
     case ExpensesCategory.FOOD:
       return (

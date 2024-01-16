@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: COLORS.border,
     position: "absolute",
     bottom: 20,
     right: 20,

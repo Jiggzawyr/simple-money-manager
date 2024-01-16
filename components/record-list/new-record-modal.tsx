@@ -117,7 +117,7 @@ const NewRecordModal = ({
           <View style={styles.inputContainer}>
             <Text
               style={{
-                color: "black",
+                color: COLORS.text,
                 fontWeight: "bold",
               }}
             >
@@ -126,9 +126,10 @@ const NewRecordModal = ({
             <TextInput
               style={{
                 borderWidth: 1,
-                borderColor: isNameValid ? "gray" : "red",
+                borderColor: isNameValid ? COLORS.text : "red",
                 padding: 8,
                 borderRadius: 5,
+                color: COLORS.text,
               }}
               value={newRecord.name}
               onChangeText={(text) => setName(text)}
@@ -138,7 +139,7 @@ const NewRecordModal = ({
           <View style={styles.inputContainer}>
             <Text
               style={{
-                color: "black",
+                color: COLORS.text,
                 fontWeight: "bold",
               }}
             >
@@ -147,9 +148,10 @@ const NewRecordModal = ({
             <TextInput
               style={{
                 borderWidth: 1,
-                borderColor: isAmountValid ? "gray" : "red",
+                borderColor: isAmountValid ? COLORS.text : "red",
                 padding: 8,
                 borderRadius: 5,
+                color: COLORS.text,
               }}
               keyboardType="numeric"
               value={newRecord.amount?.toString()}
@@ -198,13 +200,17 @@ const NewRecordModal = ({
           <View>
             <RNSingleSelect
               placeholder="Select Category"
+              placeholderTextColor={COLORS.text}
               buttonContainerStyle={{
                 backgroundColor: COLORS.background,
                 borderWidth: 1,
-                borderColor: isCategoryValid ? "gray" : "red",
+                borderColor: isCategoryValid ? COLORS.text : "red",
               }}
-              menuBarContainerStyle={styles.categorySelectOption}
-              menuItemTextStyle={styles.categorySelectOptionText}
+              arrowImageStyle={{ backgroundColor: COLORS.button }}
+              menuBarContainerStyle={{
+                backgroundColor: COLORS.background,
+              }}
+              menuItemTextStyle={{ color: COLORS.text }}
               data={categories}
               searchEnabled={false}
               onSelect={(selectedItem: ISingleSelectDataType) => {
@@ -255,15 +261,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
   },
-  categorySelectOption: {
-    backgroundColor: COLORS.background,
-  },
-  categorySelectOptionText: {
-    color: "black",
-  },
   modalButton: {
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: COLORS.border,
     backgroundColor: COLORS.button,
     padding: 15,
     marginLeft: 5,

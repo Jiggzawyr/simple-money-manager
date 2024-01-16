@@ -113,6 +113,7 @@ const Wrapper = () => {
             fontSize: 10,
             width: "100%", // Ensure the labels take up the entire tab width
             margin: 0,
+            color: COLORS.text,
           },
           tabBarIconStyle: {
             alignItems: "center", // Center the icons vertically

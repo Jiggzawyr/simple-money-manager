@@ -11,7 +11,7 @@ const Archive = ({
   setSummaries: (arg0: any) => void;
 }) => {
   return (
-    <View>
+    <View style={{ flex: 1, backgroundColor: COLORS.background }}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View>
           {summaries.map((summary, index) => (

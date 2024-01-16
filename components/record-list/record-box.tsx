@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Record, RecordType } from "../../models/record";
 import { format } from "date-fns";
 import Category from "./category";
-import { Feather } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { COLORS } from "../../utils/color";
 
 const RecordBox = ({
@@ -32,13 +32,15 @@ const RecordBox = ({
         }}
       >
         <Category recordCategory={record.category}></Category>
-        <Text style={{ fontWeight: "bold", paddingLeft: 3 }}>
+        <Text
+          style={{ fontWeight: "bold", paddingLeft: 3, color: COLORS.text }}
+        >
           {record.name}
         </Text>
       </View>
 
       <Pressable style={styles.deleteButton} onPress={handlePress}>
-        <Feather name="minus-circle" size={22} color={COLORS.remove} />
+        <FontAwesome name="remove" size={24} color={COLORS.remove} />
       </Pressable>
 
       <View
@@ -56,6 +58,7 @@ const RecordBox = ({
             flexDirection: "row",
             justifyContent: "flex-end",
             paddingLeft: 4,
+            color: COLORS.text,
           }}
         >
           {format(record.date, "yyyy-MMM-dd HH:mm")}
@@ -68,7 +71,7 @@ const RecordBox = ({
 const styles = StyleSheet.create({
   box: {
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: COLORS.border,
     borderRadius: 10,
     overflow: "hidden",
     padding: 5,

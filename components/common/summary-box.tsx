@@ -71,7 +71,7 @@ const SummaryBox = ({
       <Text style={{ color: COLORS.text, fontWeight: "bold" }}>
         Change: {summary.totalIncome - summary.totalExpenses}
       </Text>
-      {!archive && summary.records.length > 0 && (
+      {!archive && summary.records?.length > 0 && (
         <Pressable style={styles.archiveButton} onPress={handlePressArchive}>
           <Feather name="archive" size={28} color={COLORS.remove} />
         </Pressable>

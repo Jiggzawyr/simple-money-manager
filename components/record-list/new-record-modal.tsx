@@ -9,11 +9,10 @@ import {
 import { RadioButton } from "react-native-paper";
 import { Record, RecordType } from "../../models/record";
 import { useState } from "react";
-import RNSingleSelect, {
-  ISingleSelectDataType,
-} from "@freakycoder/react-native-single-select";
 import { getCategories } from "../../utils/categories";
 import { COLORS } from "../../utils/color";
+import SelectDropdown from "react-native-select-dropdown";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const NewRecordModal = ({
   newRecord,
@@ -31,7 +30,7 @@ const NewRecordModal = ({
   const [isNameValid, setIsNameValid] = useState<boolean>(true);
   const [isAmountValid, setIsAmountValid] = useState<boolean>(true);
   const [isCategoryValid, setIsCategoryValid] = useState<boolean>(true);
-  const [categories, setCategories] = useState<Array<ISingleSelectDataType>>(
+  const [categories, setCategories] = useState<Array<String>>(
     getCategories(RecordType.EXPENSE)
   );
 
@@ -114,6 +113,44 @@ const NewRecordModal = ({
         }}
       >
         <View style={styles.modalContent}>
+          <RadioButton.Group
+            onValueChange={(type) => setType(type)}
+            value={newRecord.type}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <RadioButton
+                  value={RecordType.EXPENSE}
+                  color={COLORS.expense}
+                />
+                <Text style={{ fontWeight: "bold", color: COLORS.expense }}>
+                  Expense
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <RadioButton value={RecordType.INCOME} color={COLORS.income} />
+                <Text style={{ fontWeight: "bold", color: COLORS.income }}>
+                  Income
+                </Text>
+              </View>
+            </View>
+          </RadioButton.Group>
+
           <View style={styles.inputContainer}>
             <Text
               style={{
@@ -159,63 +196,50 @@ const NewRecordModal = ({
             />
           </View>
 
-          <RadioButton.Group
-            onValueChange={(type) => setType(type)}
-            value={newRecord.type}
-          >
-            <View
+          <View>
+            <Text
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                color: COLORS.text,
+                fontWeight: "bold",
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <RadioButton
-                  value={RecordType.EXPENSE}
-                  color={COLORS.expense}
-                />
-                <Text style={{ fontWeight: "bold", color: COLORS.expense }}>
-                  Expense
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
-                <RadioButton value={RecordType.INCOME} color={COLORS.income} />
-                <Text style={{ fontWeight: "bold", color: COLORS.income }}>
-                  Income
-                </Text>
-              </View>
-            </View>
-          </RadioButton.Group>
-
-          <View>
-            <RNSingleSelect
-              placeholder="Select Category"
-              placeholderTextColor={COLORS.text}
-              buttonContainerStyle={{
+              Category:
+            </Text>
+            <SelectDropdown
+              data={categories}
+              onSelect={(selectedItem) => {
+                setCategory(selectedItem);
+              }}
+              defaultButtonText={" "}
+              buttonTextAfterSelection={(selectedItem) => selectedItem}
+              rowTextForSelection={(item) => item}
+              buttonStyle={{
                 backgroundColor: COLORS.background,
                 borderWidth: 1,
-                borderColor: isCategoryValid ? COLORS.text : "red",
+                borderRadius: 5,
+                borderColor: isCategoryValid ? COLORS.border : "red",
+                padding: 8,
+                width: "100%",
+                height: 45,
               }}
-              arrowImageStyle={{ backgroundColor: COLORS.button }}
-              menuBarContainerStyle={{
-                backgroundColor: COLORS.background,
+              buttonTextStyle={{
+                textAlign: "left",
+                fontSize: 16,
+                marginLeft: 0,
               }}
-              menuItemTextStyle={{ color: COLORS.text }}
-              data={categories}
-              searchEnabled={false}
-              onSelect={(selectedItem: ISingleSelectDataType) => {
-                setCategory(selectedItem.value);
+              renderDropdownIcon={(isOpened) => {
+                return (
+                  <FontAwesome
+                    name={isOpened ? "chevron-up" : "chevron-down"}
+                    color={"#444"}
+                    size={18}
+                  />
+                );
               }}
+              dropdownIconPosition={"right"}
+              dropdownStyle={{ backgroundColor: COLORS.background }}
+              rowStyle={{}}
+              rowTextStyle={{ textAlign: "left" }}
             />
           </View>
 

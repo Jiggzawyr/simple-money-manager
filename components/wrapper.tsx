@@ -86,7 +86,7 @@ const Wrapper = () => {
               case "Archive":
                 iconName = focused ? "archive" : "archive";
                 break;
-              case "RecordList":
+              case "Transactions":
                 iconName = focused ? "list-alt" : "list";
                 break;
               case "Chart":
@@ -127,7 +127,7 @@ const Wrapper = () => {
         <Tab.Screen name="Archive">
           {() => <Archive summaries={summaries} setSummaries={setSummaries} />}
         </Tab.Screen>
-        <Tab.Screen name="RecordList">
+        <Tab.Screen name="Transactions">
           {() => (
             <RecordList
               records={records}

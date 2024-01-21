@@ -73,7 +73,7 @@ const SummaryBox = ({
       </Text>
       {!archive && summary.records?.length > 0 && (
         <Pressable style={styles.archiveButton} onPress={handlePressArchive}>
-          <Feather name="archive" size={28} color={COLORS.remove} />
+          <Feather name="archive" size={28} color={COLORS.archive} />
         </Pressable>
       )}
       {archive && summary.status === SummaryStatus.ARCHIVED && (

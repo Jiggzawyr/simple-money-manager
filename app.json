@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "money-manager",
-    "slug": "money-manager",
+    "name": "Monzey",
+    "slug": "monzey",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,7 +29,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "f04356a5-a47b-4b6c-ab1b-bd940bddca45"
+        "projectId": "696ddc1e-120b-41d3-95d5-9d42adb8025d"
       }
     }
   }

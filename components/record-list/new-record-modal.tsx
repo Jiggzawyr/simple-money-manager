@@ -13,18 +13,23 @@ import { getCategories } from "../../utils/categories";
 import { COLORS } from "../../utils/color";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { Summary, SummaryStatus } from "../../models/summary";
+import { getSummary } from "../../utils/calculations";
+import { saveSummaries } from "../../utils/storage";
 
 const NewRecordModal = ({
   newRecord,
   setNewRecord,
-  records,
-  setRecords,
+  summary,
+  setSummary,
+  setSummaries,
   setModalVisible,
 }: {
   newRecord: Record;
   setNewRecord: (arg0: any) => void;
-  records: Record[];
-  setRecords: (arg0: any) => void;
+  summary: Summary;
+  setSummary: (arg0: any) => void;
+  setSummaries: (arg0: any) => void;
   setModalVisible: (arg0: any) => void;
 }) => {
   const [isNameValid, setIsNameValid] = useState<boolean>(true);
@@ -91,14 +96,24 @@ const NewRecordModal = ({
       return;
     setModalVisible(false);
     newRecord.id =
-      (records.sort((a: Record, b: Record) => b.id - a.id).at(0)?.id ?? 0) + 1;
+      (summary.records.sort((a: Record, b: Record) => b.id - a.id).at(0)?.id ??
+        0) + 1;
     newRecord.date = new Date();
-    setRecords((prevRecords: Record[]) => {
-      let records = [...prevRecords, newRecord];
-      records = records.sort((a: Record, b: Record) => {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      });
-      return records;
+    let newRecords: Record[] = [...summary.records, newRecord];
+    newRecords = newRecords.sort((a: Record, b: Record) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+    const newSummary: Summary = getSummary(newRecords);
+    newSummary.status = SummaryStatus.ACTIVE;
+    setSummary(newSummary);
+    setSummaries((prevSummaries: Summary[]) => {
+      const newSummaries: Summary[] = [...prevSummaries];
+      const index: number = newSummaries.findIndex(
+        (summary) => summary.status === SummaryStatus.ACTIVE
+      );
+      newSummaries[index] = newSummary;
+      saveSummaries(newSummaries);
+      return newSummaries;
     });
     console.log("Modal Completed");
   };

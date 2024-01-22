@@ -22,7 +22,6 @@ export function getSummary(records: Record[]): Summary {
     totalIncome,
     totalExpenses,
     records,
-    status: SummaryStatus.ACTIVE,
   };
   return summary;
 }
@@ -43,16 +42,19 @@ export function getChartData(records: Record[]): any[] {
     0
   );
 
-  return Object.keys(group).map((key) => {
-    const amount: number = group[key].reduce(
-      (sum: number, record: Record) => sum + record.amount,
-      0
-    );
-    const label: string =
-      key + "\n" + ((amount / total) * 100).toFixed(2) + "%";
-    return {
-      x: label,
-      y: amount,
-    };
-  });
+  return Object.keys(group)
+    .map((key) => {
+      const amount: number = group[key].reduce(
+        (sum: number, record: Record) => sum + record.amount,
+        0
+      );
+      const label: string =
+        key + " " + ((amount / total) * 100).toFixed(2) + "%";
+      return {
+        x: label,
+        y: amount,
+        name: label,
+      };
+    })
+    .sort((a, b) => b.y - a.y);
 }

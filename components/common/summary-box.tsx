@@ -4,20 +4,28 @@ import { format } from "date-fns";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { COLORS } from "../../utils/color";
+import { getSummary } from "../../utils/calculations";
+import { saveSummaries } from "../../utils/storage";
 
 const SummaryBox = ({
   archive,
   summary,
+  setSummary,
   setSummaries,
-  setRecords,
+  navigation,
 }: {
   archive: boolean;
   summary: Summary;
+  setSummary?: (arg0: any) => void;
   setSummaries?: (arg0: any) => void;
-  setRecords?: (arg0: any) => void;
+  navigation?: any;
 }) => {
   const handlePressArchive = () => {
     console.log("Archive Summary Pressed");
+    // Generate new active summary
+    const newSummary: Summary = getSummary([]);
+    newSummary.status = SummaryStatus.ACTIVE;
+    // Add archived summary to the list
     setSummaries((prevSummaries: Summary[]) => {
       let newSummaries: Summary[] = [...prevSummaries].filter(
         (summary) => summary.status === SummaryStatus.ARCHIVED
@@ -33,10 +41,13 @@ const SummaryBox = ({
       };
       newSummaries.push(archivedSummary);
       newSummaries = newSummaries.sort((a, b) => (b.id || 0) - (a.id || 0));
+      newSummaries.unshift(newSummary);
       console.log(newSummaries);
+      saveSummaries(newSummaries);
       return newSummaries;
     });
-    setRecords([]);
+    // Set new active summary
+    setSummary(newSummary);
   };
 
   const handlePressRemove = (summary: Summary) => {
@@ -47,43 +58,66 @@ const SummaryBox = ({
         (s) => s.id !== summary.id
       );
       console.log(newSummaries.length);
+      saveSummaries(newSummaries);
       return newSummaries;
     });
   };
 
+  const handlePressSumaryBox = () => {
+    if (archive) {
+      console.log("handlePressSumaryBox");
+      console.log(summary);
+      setSummary(summary);
+      navigation.navigate("Records");
+    }
+  };
+
   return (
     <View style={styles.box}>
-      <View style={styles.dateHeader}>
-        <Text style={styles.dateHeaderText}>
-          {summary.startDate && format(summary.startDate, "yyyy.MM.dd")}
+      <Pressable onPress={handlePressSumaryBox}>
+        <View style={styles.dateHeader}>
+          <Text style={styles.dateHeaderText}>
+            {summary.startDate && format(summary.startDate, "yyyy.MM.dd")}
+          </Text>
+          <Text style={styles.dateHeaderText}>{" - "}</Text>
+          <Text style={styles.dateHeaderText}>
+            {summary.endDate && format(summary.endDate, "yyyy.MM.dd")}
+          </Text>
+        </View>
+        <Text style={{ color: COLORS.income, fontWeight: "bold" }}>
+          Total Income: {summary.totalIncome}
         </Text>
-        <Text style={styles.dateHeaderText}>{" - "}</Text>
-        <Text style={styles.dateHeaderText}>
-          {summary.endDate && format(summary.endDate, "yyyy.MM.dd")}
+        <Text style={{ color: COLORS.expense, fontWeight: "bold" }}>
+          Total Expenses: {summary.totalExpenses}
         </Text>
-      </View>
-      <Text style={{ color: COLORS.income, fontWeight: "bold" }}>
-        Total Income: {summary.totalIncome}
-      </Text>
-      <Text style={{ color: COLORS.expense, fontWeight: "bold" }}>
-        Total Expenses: {summary.totalExpenses}
-      </Text>
-      <Text style={{ color: COLORS.text, fontWeight: "bold" }}>
-        Change: {summary.totalIncome - summary.totalExpenses}
-      </Text>
-      {!archive && summary.records?.length > 0 && (
-        <Pressable style={styles.archiveButton} onPress={handlePressArchive}>
-          <Feather name="archive" size={28} color={COLORS.archive} />
-        </Pressable>
-      )}
-      {archive && summary.status === SummaryStatus.ARCHIVED && (
-        <Pressable
-          style={styles.archiveButton}
-          onPress={() => handlePressRemove(summary)}
-        >
-          <FontAwesome name="remove" size={28} color={COLORS.remove} />
-        </Pressable>
-      )}
+        <Text style={{ color: COLORS.text, fontWeight: "bold" }}>
+          Change: {summary.totalIncome - summary.totalExpenses}
+        </Text>
+        {!archive &&
+          summary.status === SummaryStatus.ACTIVE &&
+          summary.records?.length > 0 && (
+            <Pressable
+              style={styles.archiveButton}
+              onPress={handlePressArchive}
+            >
+              <Feather name="archive" size={28} color={COLORS.archive} />
+            </Pressable>
+          )}
+        {!archive && summary.status === SummaryStatus.ARCHIVED && (
+          <Text style={styles.archiveButton}>ARCHIVED</Text>
+        )}
+        {archive && summary.status === SummaryStatus.ACTIVE && (
+          <Text style={styles.archiveButton}>ACTIVE</Text>
+        )}
+        {archive && summary.status === SummaryStatus.ARCHIVED && (
+          <Pressable
+            style={styles.archiveButton}
+            onPress={() => handlePressRemove(summary)}
+          >
+            <FontAwesome name="remove" size={28} color={COLORS.remove} />
+          </Pressable>
+        )}
+      </Pressable>
     </View>
   );
 };
@@ -113,8 +147,8 @@ const styles = StyleSheet.create({
   },
   archiveButton: {
     position: "absolute",
-    bottom: 6,
-    right: 12,
+    bottom: 0,
+    right: 0,
   },
 });
 

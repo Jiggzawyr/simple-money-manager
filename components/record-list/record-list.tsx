@@ -3,25 +3,28 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import NewRecordModal from "./new-record-modal";
 import { Record, RecordType } from "../../models/record";
 import RecordBox from "./record-box";
-import { Summary } from "../../models/summary";
+import { Summary, SummaryStatus } from "../../models/summary";
 import SummaryBox from "../common/summary-box";
 import { COLORS } from "../../utils/color";
+import { Entypo } from "@expo/vector-icons";
 
 const RecordList = ({
-  records,
-  setRecords,
   summary,
+  summaries,
+  setSummary,
   setSummaries,
+  navigation,
 }: {
-  records: Record[];
-  setRecords: (arg0: any) => void;
   summary: Summary;
+  summaries: Summary[];
+  setSummary: (arg0: any) => void;
   setSummaries: (arg0: any) => void;
+  navigation: any;
 }) => {
   const [newRecord, setNewRecord] = useState<Record>({});
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const handlePress = () => {
+  const handlePressAdd = () => {
     setNewRecord({
       type: RecordType.EXPENSE,
     });
@@ -29,37 +32,56 @@ const RecordList = ({
     console.log("Modal Opened");
   };
 
+  const handlePressBack = () => {
+    const activeSummary: Summary = summaries.find(
+      (summary: Summary) => summary.status === SummaryStatus.ACTIVE
+    );
+    setSummary(activeSummary);
+  };
+
   return (
     <View style={styles.container}>
       <SummaryBox
         archive={false}
         summary={summary}
+        setSummary={setSummary}
         setSummaries={setSummaries}
-        setRecords={setRecords}
+        navigation={navigation}
       ></SummaryBox>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
-          {records.map((record, index) => (
+          {summary.records.map((record, index) => (
             <RecordBox
               key={index}
               record={record}
-              setRecords={setRecords}
+              summary={summary}
+              setSummary={setSummary}
+              setSummaries={setSummaries}
             ></RecordBox>
           ))}
         </View>
       </ScrollView>
 
-      <Pressable style={styles.addButton} onPress={handlePress}>
-        <Text style={styles.buttonText}>+</Text>
-      </Pressable>
+      {summary.status === SummaryStatus.ACTIVE && (
+        <Pressable style={styles.addButton} onPress={handlePressAdd}>
+          <Entypo name="plus" size={24} color="white" />
+        </Pressable>
+      )}
+
+      {summary.status === SummaryStatus.ARCHIVED && (
+        <Pressable style={styles.addButton} onPress={handlePressBack}>
+          <Entypo name="back" size={24} color="white" />
+        </Pressable>
+      )}
 
       {isModalVisible && (
         <NewRecordModal
           newRecord={newRecord}
           setNewRecord={setNewRecord}
-          records={records}
-          setRecords={setRecords}
+          summary={summary}
+          setSummary={setSummary}
+          setSummaries={setSummaries}
           setModalVisible={setModalVisible}
         ></NewRecordModal>
       )}

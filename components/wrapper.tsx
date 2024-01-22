@@ -6,12 +6,7 @@ import Chart from "./chart/chart";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ExpensesCategory, Record, RecordType } from "../models/record";
-import {
-  retrieveRecords,
-  retrieveSummaries,
-  saveRecords,
-  saveSummaries,
-} from "../utils/storage";
+import { retrieveSummaries } from "../utils/storage";
 import { getSummary } from "../utils/calculations";
 import { Summary, SummaryStatus } from "../models/summary";
 import { COLORS } from "../utils/color";
@@ -25,56 +20,33 @@ const Wrapper = () => {
       id: i,
       name: "Name " + i,
       type: RecordType.EXPENSE,
-      category: ExpensesCategory.RENT_MORTGAGE,
+      category: ExpensesCategory.HOUSING,
       amount: 1000 * i,
       date: new Date(),
     });
   }
 
-  const [records, setRecords] = useState<Record[]>([]);
   const [summary, setSummary] = useState<Summary>({});
   const [summaries, setSummaries] = useState<Summary[]>([]);
 
   // Load summaries when the component mounts
   useEffect(() => {
-    //retrieveRecords().then((records) => setRecords(records));
     retrieveSummaries().then((summaries) => {
       if (summaries.length === 0) {
         console.log("No saved summaries");
         const newSummary: Summary = getSummary([]);
+        newSummary.status = SummaryStatus.ACTIVE;
         summaries.push(newSummary);
       }
       console.log("***summaries***");
       console.log(summaries);
       setSummaries(summaries);
-      const records = summaries.find(
-        (summary) => summary.status === SummaryStatus.ACTIVE
-      ).records;
-      setRecords(records);
-    });
-  }, []);
-
-  useEffect(() => {
-    console.log("useEffect - records");
-    saveRecords(records);
-    const newSummary: Summary = getSummary(records);
-    setSummary(newSummary);
-    setSummaries((prevSummaries) => {
-      const newSummaries: Summary[] = [...prevSummaries];
-      const index: number = newSummaries.findIndex(
+      const activeSummary = summaries.find(
         (summary) => summary.status === SummaryStatus.ACTIVE
       );
-      if (index === -1) newSummaries.unshift(newSummary);
-      else newSummaries[index] = newSummary;
-      saveSummaries(newSummaries);
-      return newSummaries;
+      setSummary(activeSummary);
     });
-  }, [records]);
-
-  // useEffect(() => {
-  //   console.log("useEffect - summary");
-
-  // }, [summary]);
+  }, []);
 
   return (
     <NavigationContainer>
@@ -86,7 +58,7 @@ const Wrapper = () => {
               case "Archive":
                 iconName = focused ? "archive" : "archive";
                 break;
-              case "Transactions":
+              case "Records":
                 iconName = focused ? "list-alt" : "list";
                 break;
               case "Chart":
@@ -125,20 +97,28 @@ const Wrapper = () => {
         tabBarPosition="bottom"
       >
         <Tab.Screen name="Archive">
-          {() => <Archive summaries={summaries} setSummaries={setSummaries} />}
+          {(props) => (
+            <Archive
+              summaries={summaries}
+              setSummary={setSummary}
+              setSummaries={setSummaries}
+              navigation={props.navigation}
+            />
+          )}
         </Tab.Screen>
-        <Tab.Screen name="Transactions">
+        <Tab.Screen name="Records">
           {() => (
             <RecordList
-              records={records}
-              setRecords={setRecords}
               summary={summary}
+              summaries={summaries}
+              setSummary={setSummary}
               setSummaries={setSummaries}
+              navigation={undefined}
             />
           )}
         </Tab.Screen>
         <Tab.Screen name="Chart">
-          {() => <Chart records={records} />}
+          {() => <Chart records={summary.records} />}
         </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>

@@ -5,10 +5,14 @@ import { COLORS } from "../../utils/color";
 
 const Archive = ({
   summaries,
+  setSummary,
   setSummaries,
+  navigation,
 }: {
   summaries: Summary[];
+  setSummary: (arg0: any) => void;
   setSummaries: (arg0: any) => void;
+  navigation: any;
 }) => {
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.background }}>
@@ -19,7 +23,9 @@ const Archive = ({
               key={index}
               archive={true}
               summary={summary}
+              setSummary={setSummary}
               setSummaries={setSummaries}
+              navigation={navigation}
             ></SummaryBox>
           ))}
         </View>

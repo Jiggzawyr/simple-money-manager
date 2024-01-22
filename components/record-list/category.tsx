@@ -51,13 +51,13 @@ const Category = ({ recordCategory }: { recordCategory: string }) => {
           color={COLORS.recordIcon}
         />
       );
-    case ExpensesCategory.RENT_MORTGAGE:
+    case ExpensesCategory.HOUSING:
       return <Entypo name="home" size={iconSize} color={COLORS.recordIcon} />;
     case ExpensesCategory.TRANSPORTATION:
       return (
         <FontAwesome name="car" size={iconSize} color={COLORS.recordIcon} />
       );
-    case ExpensesCategory.HEALTHCARE:
+    case ExpensesCategory.HEALTH:
       return (
         <MaterialIcons
           name="healing"
@@ -76,6 +76,12 @@ const Category = ({ recordCategory }: { recordCategory: string }) => {
     case ExpensesCategory.TRAVEL:
       return (
         <FontAwesome name="plane" size={iconSize} color={COLORS.recordIcon} />
+      );
+    case ExpensesCategory.ENTERTAINMENT:
+      return <Entypo name="ticket" size={iconSize} color={COLORS.recordIcon} />;
+    case ExpensesCategory.GIFTS:
+      return (
+        <FontAwesome name="gift" size={iconSize} color={COLORS.recordIcon} />
       );
     case ExpensesCategory.OTHER:
       return (

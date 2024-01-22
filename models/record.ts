@@ -12,11 +12,13 @@ export enum IncomeCategory {
 export enum ExpensesCategory {
   FOOD = "Food",
   UTILITIES = "Utilities",
-  RENT_MORTGAGE = "Rent/Mortgage",
+  HOUSING = "Housing",
   TRANSPORTATION = "Transportation",
-  HEALTHCARE = "Healthcare",
+  HEALTH = "Health",
   CLOTHING = "Clothing",
   TRAVEL = "Travel",
+  ENTERTAINMENT = "Entertainment",
+  GIFTS = "Gifts",
   OTHER = "Other",
 }
 

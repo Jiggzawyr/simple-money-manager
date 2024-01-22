@@ -4,22 +4,41 @@ import { format } from "date-fns";
 import Category from "./category";
 import { FontAwesome } from "@expo/vector-icons";
 import { COLORS } from "../../utils/color";
+import { Summary, SummaryStatus } from "../../models/summary";
+import { getSummary } from "../../utils/calculations";
+import { saveSummaries } from "../../utils/storage";
 
 const RecordBox = ({
   record,
-  setRecords,
+  summary,
+  setSummary,
+  setSummaries,
 }: {
   record: Record;
-  setRecords: (arg0: any) => void;
+  summary: Summary;
+  setSummary: (arg0: any) => void;
+  setSummaries: (arg0: any) => void;
 }) => {
   const recordTypeColor =
     record.type === RecordType.EXPENSE ? COLORS.expense : COLORS.income;
 
   const handlePress = () => {
-    setRecords((prevRecords: Record[]) => {
-      return prevRecords.filter((recordElem) => recordElem.id != record.id);
+    console.log("Delete Record Pressed");
+    const newRecords: Record[] = summary.records.filter(
+      (recordElem) => recordElem.id != record.id
+    );
+    const newSummary: Summary = getSummary(newRecords);
+    newSummary.status = SummaryStatus.ACTIVE;
+    setSummary(newSummary);
+    setSummaries((prevSummaries: Summary[]) => {
+      const newSummaries: Summary[] = [...prevSummaries];
+      const index: number = newSummaries.findIndex(
+        (summary) => summary.status === SummaryStatus.ACTIVE
+      );
+      newSummaries[index] = newSummary;
+      saveSummaries(newSummaries);
+      return newSummaries;
     });
-    console.log("Delete Pressed");
   };
 
   return (
@@ -39,9 +58,11 @@ const RecordBox = ({
         </Text>
       </View>
 
-      <Pressable style={styles.deleteButton} onPress={handlePress}>
-        <FontAwesome name="remove" size={24} color={COLORS.remove} />
-      </Pressable>
+      {summary.status === SummaryStatus.ACTIVE && (
+        <Pressable style={styles.deleteButton} onPress={handlePress}>
+          <FontAwesome name="remove" size={24} color={COLORS.remove} />
+        </Pressable>
+      )}
 
       <View
         style={{
